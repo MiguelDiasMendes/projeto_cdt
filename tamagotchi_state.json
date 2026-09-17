@@ -1,8 +1,8 @@
 {
-  "happiness": 7.5,
-  "xp": 135,
+  "happiness": 10.0,
+  "xp": 145,
   "level": 7,
-  "points": 272,
+  "points": 274,
   "name": "Tama",
   "appearance": "cachorro",
   "accessory": "nenhum",
@@ -24,11 +24,6 @@
     "level_2"
   ],
   "point_history": [
-    {
-      "date": "2026-09-17T16:28:27.643878",
-      "amount": 2,
-      "reason": "Atividade produtiva"
-    },
     {
       "date": "2026-09-17T16:28:30.916799",
       "amount": 2,
@@ -523,11 +518,16 @@
       "date": "2026-09-17T16:56:52.576634",
       "amount": 2,
       "reason": "Atividade produtiva"
+    },
+    {
+      "date": "2026-09-17T16:56:55.819872",
+      "amount": 2,
+      "reason": "Atividade produtiva"
     }
   ],
   "time_history": {
     "2026-09-17": {
-      "produtivo": 333.0,
+      "produtivo": 336.0,
       "distracao": 60.0,
       "neutro": 1251.0
     }
@@ -536,8 +536,8 @@
   "goal_reward_dates": [],
   "streak": 1,
   "last_productive_date": "2026-09-17",
-  "total_productive_seconds": 333.0,
+  "total_productive_seconds": 336.0,
   "floating_x": 767,
   "floating_y": 309,
-  "updated": "2026-09-17T16:56:52.577292"
+  "updated": "2026-09-17T16:56:55.820329"
 }
