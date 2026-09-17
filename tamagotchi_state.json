@@ -1,8 +1,8 @@
 {
-  "happiness": 38.0,
-  "xp": 80,
+  "happiness": 42.5,
+  "xp": 100,
   "level": 2,
-  "points": 86,
+  "points": 90,
   "name": "Polenta",
   "appearance": "tradicional",
   "accessory": "nenhum",
@@ -121,21 +121,31 @@
       "date": "2026-09-17T14:01:45.226950",
       "amount": 2,
       "reason": "Atividade produtiva"
+    },
+    {
+      "date": "2026-09-17T14:01:51.318217",
+      "amount": 2,
+      "reason": "Atividade produtiva"
+    },
+    {
+      "date": "2026-09-17T14:01:54.384043",
+      "amount": 2,
+      "reason": "Atividade produtiva"
     }
   ],
   "time_history": {
     "2026-09-17": {
-      "produtivo": 54.0,
+      "produtivo": 60.0,
       "distracao": 15.0,
-      "neutro": 342.0
+      "neutro": 345.0
     }
   },
   "daily_goal_minutes": 30,
   "goal_reward_dates": [],
   "streak": 1,
   "last_productive_date": "2026-09-17",
-  "total_productive_seconds": 54.0,
-  "floating_x": 431,
-  "floating_y": 218,
-  "updated": "2026-09-17T14:01:45.227124"
+  "total_productive_seconds": 60.0,
+  "floating_x": -23,
+  "floating_y": -40,
+  "updated": "2026-09-17T14:01:54.384280"
 }
