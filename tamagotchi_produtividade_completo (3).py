@@ -120,27 +120,37 @@ ACHIEVEMENTS = [
 # BLOCO 4 — PALETA VISUAL E FONTES
 # =============================================================================
 COLORS = {
-    "bg": "#eef1f8", "card": "#ffffff", "card_border": "#e4e7f2",
-    "text": "#2d2d3a", "text_muted": "#7b8095", "primary": "#7c5cfc",
-    "primary_dark": "#6543e8", "primary_light": "#efeaff", "track": "#eef0f7",
-    "success": "#22c55e", "warning": "#f59e0b", "danger": "#ef4444",
-    "warning_bg": "#fff4e5", "warning_fg": "#b45309",
+    # Fundo e telas inspirados no console azul das referências enviadas.
+    "bg": "#071a3d", "card": "#0c2f62", "card_border": "#58ddff",
+    "screen": "#0b396f", "screen_dark": "#041634", "outline": "#00132f",
+
+    # Textos em branco-creme e azul-claro, como em jogos portáteis retrô.
+    "text": "#ffffff", "text_muted": "#b9e9ff", "cream": "#fffdf1",
+
+    # Azuis elétricos, ciano, amarelo e verde usados nos elementos de jogo.
+    "primary": "#2d8cff", "primary_dark": "#0754be", "primary_light": "#1b4d8f",
+    "cyan": "#67e7ff", "yellow": "#ffd85a", "track": "#123f78",
+    "success": "#40e5a6", "warning": "#ffd447", "danger": "#ff6380",
+    "warning_bg": "#312f19", "warning_fg": "#ffe052",
 }
 
 MOOD_COLORS = {
-    "euforico": {"body": "#ffc94d", "light": "#ffe6a3", "aura": "#fff6e0"},
-    "feliz": {"body": "#8fd67f", "light": "#c3ecb8", "aura": "#e9f9e4"},
-    "neutro": {"body": "#7aa8f0", "light": "#b7d0f7", "aura": "#e7f0fd"},
-    "triste": {"body": "#9aa3b0", "light": "#c7ced8", "aura": "#eef0f4"},
-    "doente": {"body": "#ef8a8a", "light": "#f6bcbc", "aura": "#fde9e9"},
-    "irritado": {"body": "#ef5b57", "light": "#f5a19e", "aura": "#fde3e2"},
+    # O mascote mantém a identidade branca e azul, mudando os detalhes pelo humor.
+    "euforico": {"body": "#f9f8de", "light": "#52cfff", "aura": "#fff06a"},
+    "feliz": {"body": "#f9f8de", "light": "#61d8ff", "aura": "#7de9ff"},
+    "neutro": {"body": "#eef7ea", "light": "#5ab9f6", "aura": "#4d9fda"},
+    "triste": {"body": "#c9d9e4", "light": "#6d93bd", "aura": "#294f7d"},
+    "doente": {"body": "#d8c6d1", "light": "#bd6c87", "aura": "#6e2949"},
+    "irritado": {"body": "#f1d8ce", "light": "#ff7990", "aura": "#9a294a"},
 }
 
-FONT_TITLE = ("Segoe UI", 13, "bold")
-FONT_STATUS = ("Segoe UI", 13, "bold")
-FONT_SUB = ("Segoe UI", 9)
-FONT_SMALL = ("Segoe UI", 8)
-FONT_BTN = ("Segoe UI", 9, "bold")
+# Segoe UI oferece leitura limpa e combina com a nova interface tridimensional.
+FONT_FAMILY = "Segoe UI"
+FONT_TITLE = (FONT_FAMILY, 15, "bold")
+FONT_STATUS = (FONT_FAMILY, 13, "bold")
+FONT_SUB = (FONT_FAMILY, 9)
+FONT_SMALL = (FONT_FAMILY, 8)
+FONT_BTN = (FONT_FAMILY, 9, "bold")
 
 
 # =============================================================================
@@ -307,13 +317,21 @@ class RoundedButton(tk.Canvas):
     def _render(self, color):
         self.delete("all")
         radius = self.button_height / 2
+        # Sombra inferior cria profundidade; o brilho superior dá acabamento 3D.
         self.create_polygon(
-            rounded_rect_points(1, 1, self.button_width - 1,
+            rounded_rect_points(2, 5, self.button_width - 2,
                                 self.button_height - 1, radius),
-            smooth=True, fill=color, outline=""
+            smooth=True, fill=COLORS["outline"], outline=""
         )
+        self.create_polygon(
+            rounded_rect_points(1, 1, self.button_width - 3,
+                                self.button_height - 5, radius),
+            smooth=True, fill=color, outline=COLORS["cyan"], width=1
+        )
+        self.create_line(12, 5, self.button_width - 14, 5,
+                         fill="#8deeff", width=1)
         self.text_id = self.create_text(
-            self.button_width / 2, self.button_height / 2,
+            self.button_width / 2 - 1, self.button_height / 2 - 2,
             text=self.text, fill=self.fg, font=self.font
         )
 
@@ -331,9 +349,10 @@ class RoundedBar(tk.Canvas):
         self.bar_height = height
         self.fill_color = fill_color
         self.text_fg = text_fg
+        self.track_color = track_color
         self.create_polygon(
             rounded_rect_points(1, 1, width - 1, height - 1, height / 2),
-            smooth=True, fill=track_color, outline=""
+            smooth=True, fill=track_color, outline="#2a69a7", width=1
         )
         self.fill_id = None
         self.text_id = self.create_text(width / 2, height / 2, text="",
@@ -345,10 +364,10 @@ class RoundedBar(tk.Canvas):
             self.delete(self.fill_id)
         final_width = 1 + (self.bar_width - 2) * fraction
         self.fill_id = None
-        if final_width > 3:
+        if final_width > 5:
             self.fill_id = self.create_polygon(
-                rounded_rect_points(1, 1, final_width,
-                                    self.bar_height - 1, self.bar_height / 2),
+                rounded_rect_points(3, 3, final_width,
+                                    self.bar_height - 3, self.bar_height / 2),
                 smooth=True, fill=fill_color or self.fill_color, outline=""
             )
         self.itemconfig(self.text_id, text=text)
@@ -366,15 +385,24 @@ def seconds_to_text(seconds):
     return f"{hours}h {minutes:02d}min" if hours else f"{minutes} min"
 
 
+def blend_color(color_a, color_b, amount):
+    """Mistura duas cores hexadecimais para criar gradientes e volume."""
+    amount = max(0.0, min(1.0, amount))
+    first = tuple(int(color_a[index:index + 2], 16) for index in (1, 3, 5))
+    second = tuple(int(color_b[index:index + 2], 16) for index in (1, 3, 5))
+    mixed = tuple(round(a + (b - a) * amount) for a, b in zip(first, second))
+    return "#{:02x}{:02x}{:02x}".format(*mixed)
+
+
 # =============================================================================
 # BLOCO 9 — JANELA PRINCIPAL E NAVEGAÇÃO POR ABAS
 # =============================================================================
 class Tamagotchi(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("Tamagotchi da Produtividade")
-        self.geometry("860x760")
-        self.minsize(780, 680)
+        self.title("TAMAGOTCHI • Productivity Quest")
+        self.geometry("940x840")
+        self.minsize(860, 760)
         self.configure(bg=COLORS["bg"])
 
         self.state_data = load_state()
@@ -413,19 +441,54 @@ class Tamagotchi(tk.Tk):
             style.theme_use("clam")
         except tk.TclError:
             pass
-        style.configure("TNotebook", background=COLORS["bg"], borderwidth=0)
-        style.configure("TNotebook.Tab", font=("Segoe UI", 9, "bold"),
-                        padding=(12, 9), background="#e2e5ef",
-                        foreground=COLORS["text"])
-        style.map("TNotebook.Tab", background=[("selected", COLORS["primary"])],
-                  foreground=[("selected", "#ffffff")])
+        style.configure("TNotebook", background=COLORS["bg"], borderwidth=0,
+                        tabmargins=(4, 4, 4, 0))
+        style.configure("TNotebook.Tab", font=(FONT_FAMILY, 9, "bold"),
+                        padding=(14, 10), background=COLORS["primary_light"],
+                        foreground=COLORS["text_muted"], borderwidth=2)
+        style.map(
+            "TNotebook.Tab",
+            background=[("selected", COLORS["primary"]), ("active", COLORS["primary_dark"])],
+            foreground=[("selected", COLORS["cream"]), ("active", COLORS["cream"])]
+        )
+
+    def build_brand_header(self):
+        """Desenha uma logo suave, brilhante e em relevo tridimensional."""
+        header = tk.Canvas(self, height=76, bg=COLORS["bg"], highlightthickness=0)
+        header.pack(fill="x", padx=16, pady=(10, 0))
+
+        for y in range(76):
+            color = blend_color("#0b2d61", COLORS["bg"], y / 75)
+            header.create_line(0, y, 940, y, fill=color)
+
+        # Luzes arredondadas substituem os elementos quadrados e serrilhados.
+        for x, y, radius, color in [
+            (65, 34, 12, COLORS["cyan"]), (112, 22, 5, COLORS["yellow"]),
+            (824, 27, 9, COLORS["cyan"]), (874, 46, 5, COLORS["yellow"]),
+        ]:
+            header.create_oval(x - radius, y - radius, x + radius, y + radius,
+                               fill=blend_color(color, COLORS["bg"], 0.45), outline="")
+            header.create_oval(x - radius / 3, y - radius / 3,
+                               x + radius / 4, y + radius / 4,
+                               fill="#ffffff", outline="")
+
+        # Três camadas de texto criam sombra, profundidade e brilho.
+        header.create_text(470, 38, text="Tamagotchi",
+                           font=(FONT_FAMILY, 29, "bold"), fill="#00112f")
+        header.create_text(467, 34, text="Tamagotchi",
+                           font=(FONT_FAMILY, 29, "bold"), fill=COLORS["primary"])
+        header.create_text(465, 31, text="Tamagotchi",
+                           font=(FONT_FAMILY, 29, "bold"), fill="#ffffff")
+        header.create_text(466, 62, text="PRODUCTIVITY QUEST",
+                           font=(FONT_FAMILY, 8, "bold"), fill=COLORS["cyan"])
 
     # -------------------------------------------------------------------------
     # CÉLULA 9.2 — Criação das seis abas
     # -------------------------------------------------------------------------
     def create_tabs(self):
+        self.build_brand_header()
         self.notebook = ttk.Notebook(self)
-        self.notebook.pack(fill="both", expand=True, padx=12, pady=12)
+        self.notebook.pack(fill="both", expand=True, padx=14, pady=(4, 14))
 
         self.home_tab = tk.Frame(self.notebook, bg=COLORS["bg"])
         self.progress_tab = tk.Frame(self.notebook, bg=COLORS["bg"])
@@ -434,12 +497,12 @@ class Tamagotchi(tk.Tk):
         self.time_tab = tk.Frame(self.notebook, bg=COLORS["bg"])
         self.achievements_tab = tk.Frame(self.notebook, bg=COLORS["bg"])
 
-        self.notebook.add(self.home_tab, text="🏠 Início")
-        self.notebook.add(self.progress_tab, text="⭐ Progresso")
-        self.notebook.add(self.rewards_tab, text="🎁 Recompensas")
-        self.notebook.add(self.custom_tab, text="🎨 Personalizar")
-        self.notebook.add(self.time_tab, text="⏱ Tempo")
-        self.notebook.add(self.achievements_tab, text="🏆 Conquistas")
+        self.notebook.add(self.home_tab, text="Início")
+        self.notebook.add(self.progress_tab, text="Progresso")
+        self.notebook.add(self.rewards_tab, text="Recompensas")
+        self.notebook.add(self.custom_tab, text="Personalizar")
+        self.notebook.add(self.time_tab, text="Tempo")
+        self.notebook.add(self.achievements_tab, text="Conquistas")
 
         self.build_home_tab()
         self.build_progress_tab()
@@ -453,22 +516,22 @@ class Tamagotchi(tk.Tk):
     # =========================================================================
     def build_home_tab(self):
         card = tk.Frame(self.home_tab, bg=COLORS["card"],
-                        highlightbackground=COLORS["card_border"], highlightthickness=1)
-        card.pack(fill="both", expand=True, padx=70, pady=12)
+                        highlightbackground=COLORS["card_border"], highlightthickness=3)
+        card.pack(fill="both", expand=True, padx=76, pady=14)
 
         header = tk.Frame(card, bg=COLORS["card"])
         header.pack(fill="x", pady=(16, 2))
 
         self.badge_level = RoundedButton(
             header, text="⭐ Nível 1", bg=COLORS["primary_light"],
-            fg=COLORS["primary_dark"], width=120, height=28,
+            fg=COLORS["cream"], width=120, height=30,
             parent_bg=COLORS["card"]
         )
         self.badge_level.pack(side="left", padx=(24, 6))
 
         self.badge_points = RoundedButton(
-            header, text="💎 0 pontos", bg="#e6f8ee", fg="#15803d",
-            width=130, height=28, parent_bg=COLORS["card"]
+            header, text="◆ 0 pontos", bg=COLORS["primary_light"], fg=COLORS["cyan"],
+            width=140, height=30, parent_bg=COLORS["card"]
         )
         self.badge_points.pack(side="right", padx=(6, 24))
 
@@ -476,8 +539,8 @@ class Tamagotchi(tk.Tk):
                                    fg=COLORS["text"], bg=COLORS["card"])
         self.label_name.pack(pady=(4, 0))
 
-        self.canvas = tk.Canvas(card, width=420, height=260, bg=COLORS["card"],
-                                highlightthickness=0)
+        self.canvas = tk.Canvas(card, width=560, height=270, bg=COLORS["screen"],
+                                highlightbackground=COLORS["cyan"], highlightthickness=2)
         self.canvas.pack(pady=(2, 0))
 
         self.label_status = tk.Label(card, text="Iniciando...", font=FONT_STATUS,
@@ -491,24 +554,24 @@ class Tamagotchi(tk.Tk):
         row = tk.Frame(card, bg=COLORS["card"])
         row.pack(pady=(0, 10))
         RoundedButton(row, "🔍 Diagnosticar", self.show_diagnostics,
-                      bg=COLORS["track"], fg=COLORS["text"], hover_bg="#e2e5f0",
+                      bg=COLORS["primary_light"], fg=COLORS["text"], hover_bg=COLORS["primary_dark"],
                       width=150, height=32, parent_bg=COLORS["card"]).pack(side="left", padx=5)
         RoundedButton(row, "🔔 Testar notificação", self.test_notification,
-                      bg=COLORS["track"], fg=COLORS["text"], hover_bg="#e2e5f0",
+                      bg=COLORS["primary_light"], fg=COLORS["text"], hover_bg=COLORS["primary_dark"],
                       width=170, height=32, parent_bg=COLORS["card"]).pack(side="left", padx=5)
         RoundedButton(row, "✏️ Editar perfil", self.ask_profile_setup,
                       width=145, height=32, parent_bg=COLORS["card"]).pack(side="left", padx=5)
         RoundedButton(row, "🐣 Modo flutuante", self.enter_floating_mode,
-                      bg="#e6f8ee", fg="#15803d", hover_bg="#d2f2df",
+                      bg=COLORS["primary_light"], fg=COLORS["cyan"], hover_bg=COLORS["primary_dark"],
                       width=155, height=32, parent_bg=COLORS["card"]).pack(side="left", padx=5)
 
-        tk.Label(card, text="FELICIDADE", font=("Segoe UI", 8, "bold"),
+        tk.Label(card, text="FELICIDADE", font=(FONT_FAMILY, 8, "bold"),
                  fg=COLORS["text_muted"], bg=COLORS["card"]).pack(pady=(4, 2))
         self.bar_happiness = RoundedBar(card, 500, 24, COLORS["track"],
                                         COLORS["success"], COLORS["card"])
         self.bar_happiness.pack(pady=(0, 10))
 
-        tk.Label(card, text="EXPERIÊNCIA", font=("Segoe UI", 8, "bold"),
+        tk.Label(card, text="EXPERIÊNCIA", font=(FONT_FAMILY, 8, "bold"),
                  fg=COLORS["text_muted"], bg=COLORS["card"]).pack(pady=(0, 2))
         self.bar_xp = RoundedBar(card, 500, 16, COLORS["primary_light"],
                                  COLORS["primary"], COLORS["card"], COLORS["text"])
@@ -523,7 +586,7 @@ class Tamagotchi(tk.Tk):
     def build_progress_tab(self):
         header = tk.Frame(self.progress_tab, bg=COLORS["bg"])
         header.pack(fill="x", padx=22, pady=(22, 12))
-        tk.Label(header, text="Seu progresso", font=("Segoe UI", 18, "bold"),
+        tk.Label(header, text="Seu progresso", font=(FONT_FAMILY, 18, "bold"),
                  fg=COLORS["text"], bg=COLORS["bg"]).pack(anchor="w")
         tk.Label(header, text="Acompanhe pontos, nível, foco e sequência diária.",
                  font=FONT_SUB, fg=COLORS["text_muted"], bg=COLORS["bg"]).pack(anchor="w")
@@ -536,31 +599,31 @@ class Tamagotchi(tk.Tk):
             ("focus", "FOCO TOTAL"), ("streak", "SEQUÊNCIA")
         ]):
             card = tk.Frame(stats, bg=COLORS["card"], highlightbackground=COLORS["card_border"],
-                            highlightthickness=1, width=180, height=100)
+                            highlightthickness=2, width=180, height=100)
             card.grid(row=0, column=column, padx=5, sticky="nsew")
             card.grid_propagate(False)
             stats.grid_columnconfigure(column, weight=1)
-            tk.Label(card, text=title, font=("Segoe UI", 8, "bold"),
+            tk.Label(card, text=title, font=(FONT_FAMILY, 8, "bold"),
                      fg=COLORS["text_muted"], bg=COLORS["card"]).pack(pady=(18, 5))
-            value = tk.Label(card, text="—", font=("Segoe UI", 17, "bold"),
-                             fg=COLORS["primary"], bg=COLORS["card"])
+            value = tk.Label(card, text="—", font=(FONT_FAMILY, 17, "bold"),
+                             fg=COLORS["cyan"], bg=COLORS["card"])
             value.pack()
             self.progress_cards[key] = value
 
         level_card = tk.Frame(self.progress_tab, bg=COLORS["card"],
-                              highlightbackground=COLORS["card_border"], highlightthickness=1)
+                              highlightbackground=COLORS["card_border"], highlightthickness=2)
         level_card.pack(fill="x", padx=23, pady=14)
         tk.Label(level_card, text="PROGRESSO PARA O PRÓXIMO NÍVEL",
-                 font=("Segoe UI", 9, "bold"), fg=COLORS["text"],
+                 font=(FONT_FAMILY, 9, "bold"), fg=COLORS["text"],
                  bg=COLORS["card"]).pack(anchor="w", padx=18, pady=(16, 6))
         self.progress_level_bar = RoundedBar(level_card, 720, 24, COLORS["track"],
                                              COLORS["primary"], COLORS["card"])
         self.progress_level_bar.pack(pady=(0, 16))
 
         goal_card = tk.Frame(self.progress_tab, bg=COLORS["card"],
-                             highlightbackground=COLORS["card_border"], highlightthickness=1)
+                             highlightbackground=COLORS["card_border"], highlightthickness=2)
         goal_card.pack(fill="x", padx=23)
-        self.goal_title = tk.Label(goal_card, text="META DE HOJE", font=("Segoe UI", 10, "bold"),
+        self.goal_title = tk.Label(goal_card, text="META DE HOJE", font=(FONT_FAMILY, 10, "bold"),
                                    fg=COLORS["text"], bg=COLORS["card"])
         self.goal_title.pack(anchor="w", padx=18, pady=(16, 6))
         self.progress_goal_bar = RoundedBar(goal_card, 720, 24, COLORS["track"],
@@ -576,11 +639,11 @@ class Tamagotchi(tk.Tk):
     def build_rewards_tab(self):
         top = tk.Frame(self.rewards_tab, bg=COLORS["bg"])
         top.pack(fill="x", padx=22, pady=(20, 8))
-        tk.Label(top, text="Central de recompensas", font=("Segoe UI", 18, "bold"),
+        tk.Label(top, text="Central de recompensas", font=(FONT_FAMILY, 18, "bold"),
                  fg=COLORS["text"], bg=COLORS["bg"]).pack(side="left")
         self.rewards_points_label = tk.Label(
-            top, text="💎 0 pontos", font=("Segoe UI", 11, "bold"),
-            fg=COLORS["primary_dark"], bg=COLORS["primary_light"], padx=14, pady=7
+            top, text="◆ 0 pontos", font=(FONT_FAMILY, 11, "bold"),
+            fg=COLORS["cyan"], bg=COLORS["primary_light"], padx=14, pady=7
         )
         self.rewards_points_label.pack(side="right")
 
@@ -593,20 +656,20 @@ class Tamagotchi(tk.Tk):
 
     def refresh_rewards_tab(self):
         clear_frame(self.rewards_list)
-        self.rewards_points_label.config(text=f"💎 {self.state_data['points']} pontos")
+        self.rewards_points_label.config(text=f"◆ {self.state_data['points']} pontos")
 
         for index, reward in enumerate(REWARDS):
             row, column = divmod(index, 2)
             card = tk.Frame(self.rewards_list, bg=COLORS["card"],
-                            highlightbackground=COLORS["card_border"], highlightthickness=1,
+                            highlightbackground=COLORS["card_border"], highlightthickness=2,
                             width=390, height=135)
             card.grid(row=row, column=column, padx=6, pady=6, sticky="nsew")
             card.grid_propagate(False)
             self.rewards_list.grid_columnconfigure(column, weight=1)
 
-            tk.Label(card, text=reward["name"], font=("Segoe UI", 11, "bold"),
+            tk.Label(card, text=reward["name"], font=(FONT_FAMILY, 11, "bold"),
                      fg=COLORS["text"], bg=COLORS["card"]).pack(anchor="w", padx=15, pady=(13, 3))
-            tk.Label(card, text=f"💎 {reward['cost']} pontos  •  Nível {reward['level']}",
+            tk.Label(card, text=f"◆ {reward['cost']} pontos  •  Nível {reward['level']}",
                      font=FONT_SUB, fg=COLORS["text_muted"], bg=COLORS["card"]).pack(anchor="w", padx=15)
 
             owned = reward["id"] in self.state_data["redeemed_rewards"]
@@ -634,21 +697,21 @@ class Tamagotchi(tk.Tk):
     # =========================================================================
     def build_custom_tab(self):
         tk.Label(self.custom_tab, text="Personalize seu mascote",
-                 font=("Segoe UI", 18, "bold"), fg=COLORS["text"],
+                 font=(FONT_FAMILY, 18, "bold"), fg=COLORS["text"],
                  bg=COLORS["bg"]).pack(anchor="w", padx=23, pady=(22, 2))
         self.custom_status = tk.Label(self.custom_tab, text="", font=FONT_SUB,
                                       fg=COLORS["text_muted"], bg=COLORS["bg"])
         self.custom_status.pack(anchor="w", padx=23, pady=(0, 12))
 
         self.pet_choices = tk.LabelFrame(
-            self.custom_tab, text="  MASCOTES  ", font=("Segoe UI", 9, "bold"),
+            self.custom_tab, text="  MASCOTES  ", font=(FONT_FAMILY, 9, "bold"),
             fg=COLORS["text"], bg=COLORS["card"], bd=1, relief="solid",
             highlightbackground=COLORS["card_border"], padx=12, pady=12
         )
         self.pet_choices.pack(fill="x", padx=23, pady=(0, 14))
 
         self.accessory_choices = tk.LabelFrame(
-            self.custom_tab, text="  ACESSÓRIOS  ", font=("Segoe UI", 9, "bold"),
+            self.custom_tab, text="  ACESSÓRIOS  ", font=(FONT_FAMILY, 9, "bold"),
             fg=COLORS["text"], bg=COLORS["card"], bd=1, relief="solid",
             highlightbackground=COLORS["card_border"], padx=12, pady=12
         )
@@ -703,8 +766,8 @@ class Tamagotchi(tk.Tk):
     # BLOCO 14 — ABA TEMPO: USO DIÁRIO, SEMANAL, MENSAL E META
     # =========================================================================
     def build_time_tab(self):
-        tk.Label(self.time_tab, text="Tempo de uso saudável",
-                 font=("Segoe UI", 18, "bold"), fg=COLORS["text"],
+        tk.Label(self.time_tab, text="Tempo e bem-estar",
+                 font=(FONT_FAMILY, 18, "bold"), fg=COLORS["text"],
                  bg=COLORS["bg"]).pack(anchor="w", padx=23, pady=(22, 2))
         tk.Label(self.time_tab,
                  text="O aplicativo registra o tempo por categoria e lembra você de fazer pausas.",
@@ -717,26 +780,26 @@ class Tamagotchi(tk.Tk):
             ("today", "FOCO HOJE"), ("week", "FOCO NA SEMANA"), ("month", "FOCO NO MÊS")
         ]):
             card = tk.Frame(summary, bg=COLORS["card"],
-                            highlightbackground=COLORS["card_border"], highlightthickness=1,
+                            highlightbackground=COLORS["card_border"], highlightthickness=2,
                             width=240, height=95)
             card.grid(row=0, column=column, padx=5, sticky="nsew")
             card.grid_propagate(False)
             summary.grid_columnconfigure(column, weight=1)
-            tk.Label(card, text=title, font=("Segoe UI", 8, "bold"),
+            tk.Label(card, text=title, font=(FONT_FAMILY, 8, "bold"),
                      fg=COLORS["text_muted"], bg=COLORS["card"]).pack(pady=(17, 4))
-            label = tk.Label(card, text="0 min", font=("Segoe UI", 16, "bold"),
-                             fg=COLORS["primary"], bg=COLORS["card"])
+            label = tk.Label(card, text="0 min", font=(FONT_FAMILY, 16, "bold"),
+                             fg=COLORS["cyan"], bg=COLORS["card"])
             label.pack()
             self.time_labels[key] = label
 
         goal = tk.Frame(self.time_tab, bg=COLORS["card"],
-                        highlightbackground=COLORS["card_border"], highlightthickness=1)
+                        highlightbackground=COLORS["card_border"], highlightthickness=2)
         goal.pack(fill="x", padx=23, pady=(0, 14))
-        tk.Label(goal, text="META DIÁRIA DE FOCO", font=("Segoe UI", 9, "bold"),
+        tk.Label(goal, text="META DIÁRIA DE FOCO", font=(FONT_FAMILY, 9, "bold"),
                  fg=COLORS["text"], bg=COLORS["card"]).pack(anchor="w", padx=18, pady=(15, 4))
         row = tk.Frame(goal, bg=COLORS["card"])
         row.pack(anchor="w", padx=18, pady=(0, 15))
-        self.goal_entry = tk.Entry(row, width=8, font=("Segoe UI", 10), justify="center")
+        self.goal_entry = tk.Entry(row, width=8, font=(FONT_FAMILY, 10), justify="center")
         self.goal_entry.pack(side="left", ipady=5)
         tk.Label(row, text="minutos por dia", font=FONT_SUB,
                  fg=COLORS["text_muted"], bg=COLORS["card"]).pack(side="left", padx=8)
@@ -745,11 +808,11 @@ class Tamagotchi(tk.Tk):
                   padx=16, pady=6, cursor="hand2").pack(side="left", padx=8)
 
         details = tk.Frame(self.time_tab, bg=COLORS["card"],
-                           highlightbackground=COLORS["card_border"], highlightthickness=1)
+                           highlightbackground=COLORS["card_border"], highlightthickness=2)
         details.pack(fill="both", expand=True, padx=23, pady=(0, 18))
-        tk.Label(details, text="RESUMO DE HOJE", font=("Segoe UI", 9, "bold"),
+        tk.Label(details, text="RESUMO DE HOJE", font=(FONT_FAMILY, 9, "bold"),
                  fg=COLORS["text"], bg=COLORS["card"]).pack(anchor="w", padx=18, pady=(15, 7))
-        self.today_details = tk.Label(details, text="", font=("Segoe UI", 10),
+        self.today_details = tk.Label(details, text="", font=(FONT_FAMILY, 10),
                                       fg=COLORS["text"], bg=COLORS["card"], justify="left")
         self.today_details.pack(anchor="w", padx=18)
         tk.Label(details,
@@ -760,8 +823,8 @@ class Tamagotchi(tk.Tk):
     # BLOCO 15 — ABA CONQUISTAS: MEDALHAS E RECOMPENSAS
     # =========================================================================
     def build_achievements_tab(self):
-        tk.Label(self.achievements_tab, text="Suas conquistas",
-                 font=("Segoe UI", 18, "bold"), fg=COLORS["text"],
+        tk.Label(self.achievements_tab, text="Conquistas",
+                 font=(FONT_FAMILY, 18, "bold"), fg=COLORS["text"],
                  bg=COLORS["bg"]).pack(anchor="w", padx=23, pady=(22, 2))
         self.achievement_summary = tk.Label(self.achievements_tab, text="",
                                             font=FONT_SUB, fg=COLORS["text_muted"],
@@ -779,7 +842,7 @@ class Tamagotchi(tk.Tk):
         for index, achievement in enumerate(ACHIEVEMENTS):
             achieved = achievement["id"] in unlocked
             card = tk.Frame(self.achievement_list,
-                            bg=COLORS["card"] if achieved else "#e8eaf1",
+                            bg=COLORS["card"] if achieved else COLORS["screen_dark"],
                             highlightbackground=COLORS["success"] if achieved else COLORS["card_border"],
                             highlightthickness=2 if achieved else 1, height=72)
             card.pack(fill="x", padx=5, pady=5)
@@ -788,12 +851,12 @@ class Tamagotchi(tk.Tk):
                      bg=card["bg"]).pack(side="left", padx=15)
             texts = tk.Frame(card, bg=card["bg"])
             texts.pack(side="left", fill="y", pady=11)
-            tk.Label(texts, text=achievement["name"], font=("Segoe UI", 10, "bold"),
+            tk.Label(texts, text=achievement["name"], font=(FONT_FAMILY, 10, "bold"),
                      fg=COLORS["text"], bg=card["bg"]).pack(anchor="w")
             tk.Label(texts, text=achievement["description"], font=FONT_SUB,
                      fg=COLORS["text_muted"], bg=card["bg"]).pack(anchor="w")
             tk.Label(card, text=f"+{achievement['points']} pontos",
-                     font=("Segoe UI", 9, "bold"),
+                     font=(FONT_FAMILY, 9, "bold"),
                      fg=COLORS["success"] if achieved else COLORS["text_muted"],
                      bg=card["bg"]).pack(side="right", padx=16)
 
@@ -950,113 +1013,7 @@ class Tamagotchi(tk.Tk):
             return "irritado"
         return "neutro"
 
-    def draw_floating_pet(self):
-        """Desenha apenas o pet, sem cartão, título, fundo ou balão de fala."""
-        if self.floating_canvas is None:
-            return
-        try:
-            if not self.floating_canvas.winfo_exists():
-                return
-        except tk.TclError:
-            return
-
-        canvas = self.floating_canvas
-        canvas.delete("all")
-        cx, cy = 105, 112
-        mood = self.floating_activity_mood()
-        colors = MOOD_COLORS[mood]
-        appearance = self.state_data["appearance"]
-        accessory = self.state_data["accessory"]
-
-        # Orelhas desenhadas antes do corpo para parecerem estar atrás dele.
-        if appearance in ("gato", "raposa"):
-            canvas.create_polygon(cx - 66, cy - 34, cx - 38, cy - 94,
-                                  cx - 11, cy - 57, fill=colors["body"], outline="")
-            canvas.create_polygon(cx + 11, cy - 57, cx + 38, cy - 94,
-                                  cx + 66, cy - 34, fill=colors["body"], outline="")
-        elif appearance == "coelho":
-            canvas.create_oval(cx - 47, cy - 108, cx - 15, cy - 35,
-                               fill=colors["body"], outline="")
-            canvas.create_oval(cx + 15, cy - 108, cx + 47, cy - 35,
-                               fill=colors["body"], outline="")
-        elif appearance in ("cachorro", "panda"):
-            ear_color = "#222222" if appearance == "panda" else colors["body"]
-            canvas.create_oval(cx - 88, cy - 42, cx - 44, cy + 28,
-                               fill=ear_color, outline="")
-            canvas.create_oval(cx + 44, cy - 42, cx + 88, cy + 28,
-                               fill=ear_color, outline="")
-
-        body_color = "#f4f4f4" if appearance == "panda" else colors["body"]
-        canvas.create_oval(cx - 67, cy - 67, cx + 67, cy + 67,
-                           fill=body_color, outline="")
-
-        if appearance == "panda":
-            canvas.create_oval(cx - 42, cy - 27, cx - 12, cy + 8,
-                               fill="#222222", outline="")
-            canvas.create_oval(cx + 12, cy - 27, cx + 42, cy + 8,
-                               fill="#222222", outline="")
-
-        # Expressões: produtivo = animado; distração = irritado; outro = neutro.
-        if mood == "doente":
-            canvas.create_text(cx - 25, cy - 10, text="x",
-                               font=("Segoe UI", 21, "bold"), fill="#4b5563")
-            canvas.create_text(cx + 25, cy - 10, text="x",
-                               font=("Segoe UI", 21, "bold"), fill="#4b5563")
-        elif mood == "euforico":
-            canvas.create_arc(cx - 36, cy - 22, cx - 14, cy,
-                              start=0, extent=180, style="arc", width=4, outline="#1f2937")
-            canvas.create_arc(cx + 14, cy - 22, cx + 36, cy,
-                              start=0, extent=180, style="arc", width=4, outline="#1f2937")
-        else:
-            canvas.create_oval(cx - 33, cy - 19, cx - 18, cy - 4,
-                               fill="#1f2937", outline="")
-            canvas.create_oval(cx + 18, cy - 19, cx + 33, cy - 4,
-                               fill="#1f2937", outline="")
-            if mood == "irritado":
-                canvas.create_line(cx - 38, cy - 30, cx - 17, cy - 22,
-                                   width=4, fill="#7f1d1d")
-                canvas.create_line(cx + 17, cy - 22, cx + 38, cy - 30,
-                                   width=4, fill="#7f1d1d")
-
-        if mood == "euforico":
-            canvas.create_arc(cx - 22, cy - 3, cx + 22, cy + 30,
-                              start=180, extent=180, fill="#ef4444", outline="")
-        elif mood in ("irritado", "doente"):
-            canvas.create_arc(cx - 22, cy + 12, cx + 22, cy + 39,
-                              start=0, extent=180, style="arc", width=4, outline="#1f2937")
-        else:
-            canvas.create_line(cx - 16, cy + 17, cx + 16, cy + 17,
-                               width=4, fill="#1f2937")
-
-        if appearance != "tradicional":
-            canvas.create_polygon(cx - 7, cy + 1, cx + 7, cy + 1,
-                                  cx, cy + 9, fill="#374151", outline="")
-
-        # Mantém no modo flutuante o acessório escolhido pelo usuário.
-        if accessory == "oculos":
-            canvas.create_rectangle(cx - 49, cy - 27, cx - 8, cy + 5,
-                                    outline="#111827", width=4)
-            canvas.create_rectangle(cx + 8, cy - 27, cx + 49, cy + 5,
-                                    outline="#111827", width=4)
-            canvas.create_line(cx - 8, cy - 11, cx + 8, cy - 11,
-                               fill="#111827", width=4)
-        elif accessory == "bone":
-            canvas.create_arc(cx - 54, cy - 99, cx + 54, cy - 25,
-                              start=0, extent=180, fill=COLORS["primary"], outline="")
-            canvas.create_oval(cx + 15, cy - 65, cx + 81, cy - 49,
-                               fill=COLORS["primary_dark"], outline="")
-        elif accessory == "laco":
-            canvas.create_polygon(cx - 18, cy - 66, cx - 57, cy - 91,
-                                  cx - 49, cy - 48, fill="#ec4899", outline="")
-            canvas.create_polygon(cx - 18, cy - 66, cx + 20, cy - 91,
-                                  cx + 13, cy - 48, fill="#ec4899", outline="")
-            canvas.create_oval(cx - 28, cy - 77, cx - 7, cy - 56,
-                               fill="#be185d", outline="")
-        elif accessory == "coroa":
-            canvas.create_polygon(cx - 46, cy - 70, cx - 36, cy - 111,
-                                  cx - 13, cy - 84, cx, cy - 115,
-                                  cx + 15, cy - 84, cx + 39, cy - 111,
-                                  cx + 46, cy - 70, fill="#facc15", outline="#ca8a04")
+    # O desenho anterior foi substituído pelo personagem tridimensional abaixo.
 
     # =========================================================================
     # BLOCO 17 — DESENHO E HUMOR DO MASCOTE NA JANELA PRINCIPAL
@@ -1075,98 +1032,251 @@ class Tamagotchi(tk.Tk):
             return "irritado"
         return "doente"
 
-    def draw_pet(self):
-        self.canvas.delete("all")
-        cx, cy = 210, 150
-        mood = self.current_mood()
+    # A janela principal e o modo flutuante usam o mesmo desenho 3D.
+
+    # =========================================================================
+    # BLOCO 18 — MASCOTE COM VOLUME, LUZ E SOMBRA 3D
+    # =========================================================================
+    def draw_3d_pet(self, canvas, cx, cy, radius=68, mood=None, floating=False):
+        """Desenha um mascote suave e tridimensional sem usar imagens pixeladas."""
+        mood = mood or self.current_mood()
         colors = MOOD_COLORS[mood]
         appearance = self.state_data["appearance"]
         accessory = self.state_data["accessory"]
+        scale = radius / 68
+        dark = COLORS["outline"]
 
-        self.canvas.create_oval(cx - 75, cy + 64, cx + 75, cy + 82, fill="#e5e7eb", outline="")
-        self.canvas.create_oval(cx - 94, cy - 92, cx + 94, cy + 92, fill=colors["aura"], outline="")
-        self.canvas.create_oval(cx - 78, cy - 76, cx + 78, cy + 76, fill=colors["light"], outline="")
+        def oval(x1, y1, x2, y2, fill, outline="", width=1):
+            return canvas.create_oval(
+                cx + x1 * scale, cy + y1 * scale,
+                cx + x2 * scale, cy + y2 * scale,
+                fill=fill, outline=outline, width=width
+            )
 
+        def polygon(points, fill, outline="", width=1, smooth=True):
+            coordinates = []
+            for x, y in points:
+                coordinates.extend([cx + x * scale, cy + y * scale])
+            return canvas.create_polygon(
+                coordinates, fill=fill, outline=outline,
+                width=width, smooth=smooth
+            )
+
+        # Sombra projetada reforça que o mascote está apoiado sobre a tela.
+        if not floating:
+            oval(-62, 60, 62, 82, "#03132c")
+            oval(-47, 63, 47, 75, "#0a2447")
+
+        # Orelhas são desenhadas antes do corpo para ficarem em segundo plano.
         if appearance in ("gato", "raposa"):
-            self.canvas.create_polygon(cx - 65, cy - 36, cx - 35, cy - 92,
-                                       cx - 12, cy - 57, fill=colors["body"], outline="")
-            self.canvas.create_polygon(cx + 12, cy - 57, cx + 35, cy - 92,
-                                       cx + 65, cy - 36, fill=colors["body"], outline="")
+            ear = "#f49a55" if appearance == "raposa" else colors["light"]
+            ear_shadow = blend_color(ear, dark, 0.35)
+            polygon([(-53, -36), (-55, -94), (-15, -58)], ear_shadow, dark, 3)
+            polygon([(53, -36), (55, -94), (15, -58)], ear_shadow, dark, 3)
+            polygon([(-47, -43), (-49, -80), (-25, -57)],
+                    blend_color(ear, "#ffffff", 0.35))
+            polygon([(47, -43), (49, -80), (25, -57)],
+                    blend_color(ear, "#ffffff", 0.35))
         elif appearance == "coelho":
-            self.canvas.create_oval(cx - 45, cy - 128, cx - 14, cy - 38,
-                                    fill=colors["body"], outline="")
-            self.canvas.create_oval(cx + 14, cy - 128, cx + 45, cy - 38,
-                                    fill=colors["body"], outline="")
+            oval(-43, -118, -10, -31, blend_color(colors["body"], dark, 0.25), dark, 3)
+            oval(10, -118, 43, -31, blend_color(colors["body"], dark, 0.25), dark, 3)
+            oval(-36, -108, -17, -43, "#a9ddff")
+            oval(17, -108, 36, -43, "#a9ddff")
+            oval(-31, -101, -23, -62, "#e7f8ff")
+            oval(23, -101, 31, -62, "#e7f8ff")
         elif appearance in ("cachorro", "panda"):
-            ear_color = "#222222" if appearance == "panda" else colors["body"]
-            self.canvas.create_oval(cx - 86, cy - 40, cx - 44, cy + 28, fill=ear_color, outline="")
-            self.canvas.create_oval(cx + 44, cy - 40, cx + 86, cy + 28, fill=ear_color, outline="")
+            ear = "#14213b" if appearance == "panda" else colors["light"]
+            oval(-86, -54, -40, 17, blend_color(ear, dark, 0.35), dark, 3)
+            oval(40, -54, 86, 17, blend_color(ear, dark, 0.35), dark, 3)
+            oval(-78, -45, -47, 5, blend_color(ear, "#ffffff", 0.2))
+            oval(47, -45, 78, 5, blend_color(ear, "#ffffff", 0.2))
 
-        body_color = "#f4f4f4" if appearance == "panda" else colors["body"]
-        self.canvas.create_oval(cx - 65, cy - 65, cx + 65, cy + 65,
-                                fill=body_color, outline="")
+        # Pequenos braços e pés acrescentam profundidade ao personagem.
+        limb = blend_color(colors["body"], dark, 0.18)
+        oval(-77, 8, -48, 52, limb, dark, 2)
+        oval(48, 8, 77, 52, limb, dark, 2)
+        oval(-47, 49, -7, 78, limb, dark, 2)
+        oval(7, 49, 47, 78, limb, dark, 2)
+
+        # Corpo principal: contorno, sombra inferior, cor e reflexos.
+        body = COLORS["cream"] if appearance == "panda" else colors["body"]
+        body_shadow = blend_color(body, dark, 0.28)
+        oval(-69, -72, 69, 72, body_shadow, dark, 4)
+        oval(-64, -68, 64, 65, body, "", 0)
+        canvas.create_arc(
+            cx - 64 * scale, cy - 68 * scale,
+            cx + 64 * scale, cy + 65 * scale,
+            start=180, extent=180, style="pieslice",
+            fill=blend_color(body, colors["light"], 0.28), outline=""
+        )
+        oval(-45, -55, 17, -12, blend_color(body, "#ffffff", 0.58))
+        oval(-37, -48, -9, -27, "#ffffff")
+
+        # Manchas azuis suaves preservam a identidade do ovo original.
+        spot = colors["light"]
+        spot_light = blend_color(spot, "#ffffff", 0.35)
+        for x1, y1, x2, y2 in [
+            (-39, -60, -4, -35), (26, -48, 52, -17),
+            (-58, 3, -34, 35), (31, 29, 56, 53), (-23, 45, 11, 66),
+        ]:
+            oval(x1, y1, x2, y2, spot)
+            oval(x1 + 4, y1 + 3, x1 + (x2 - x1) * 0.55,
+                 y1 + (y2 - y1) * 0.5, spot_light)
 
         if appearance == "panda":
-            self.canvas.create_oval(cx - 40, cy - 25, cx - 12, cy + 8, fill="#222222", outline="")
-            self.canvas.create_oval(cx + 12, cy - 25, cx + 40, cy + 8, fill="#222222", outline="")
+            oval(-44, -29, -9, 8, "#17223b")
+            oval(9, -29, 44, 8, "#17223b")
 
+        # Expressões com curvas suaves e brilho nos olhos.
         if mood == "doente":
-            self.canvas.create_text(cx - 25, cy - 10, text="x", font=("Segoe UI", 20, "bold"), fill="#4b5563")
-            self.canvas.create_text(cx + 25, cy - 10, text="x", font=("Segoe UI", 20, "bold"), fill="#4b5563")
+            for eye_x in (-28, 28):
+                canvas.create_line(cx + (eye_x - 8) * scale, cy - 19 * scale,
+                                   cx + (eye_x + 8) * scale, cy - 3 * scale,
+                                   fill=dark, width=max(3, round(4 * scale)))
+                canvas.create_line(cx + (eye_x + 8) * scale, cy - 19 * scale,
+                                   cx + (eye_x - 8) * scale, cy - 3 * scale,
+                                   fill=dark, width=max(3, round(4 * scale)))
         elif mood == "euforico":
-            self.canvas.create_arc(cx - 35, cy - 20, cx - 15, cy, start=0, extent=180,
-                                   style="arc", width=3, outline="#1f2937")
-            self.canvas.create_arc(cx + 15, cy - 20, cx + 35, cy, start=0, extent=180,
-                                   style="arc", width=3, outline="#1f2937")
+            canvas.create_arc(cx - 40 * scale, cy - 28 * scale,
+                              cx - 10 * scale, cy - 2 * scale,
+                              start=5, extent=170, style="arc", outline=dark,
+                              width=max(3, round(4 * scale)))
+            canvas.create_arc(cx + 10 * scale, cy - 28 * scale,
+                              cx + 40 * scale, cy - 2 * scale,
+                              start=5, extent=170, style="arc", outline=dark,
+                              width=max(3, round(4 * scale)))
         else:
-            self.canvas.create_oval(cx - 32, cy - 18, cx - 18, cy - 4, fill="#1f2937", outline="")
-            self.canvas.create_oval(cx + 18, cy - 18, cx + 32, cy - 4, fill="#1f2937", outline="")
+            for eye_x in (-27, 27):
+                oval(eye_x - 9, -24, eye_x + 9, -3, dark)
+                oval(eye_x - 4, -21, eye_x + 2, -14, "#ffffff")
+            if mood == "irritado":
+                canvas.create_line(cx - 42 * scale, cy - 34 * scale,
+                                   cx - 15 * scale, cy - 27 * scale,
+                                   fill=COLORS["danger"], width=max(3, round(4 * scale)))
+                canvas.create_line(cx + 15 * scale, cy - 27 * scale,
+                                   cx + 42 * scale, cy - 34 * scale,
+                                   fill=COLORS["danger"], width=max(3, round(4 * scale)))
+
+        # Bochechas ajudam a expressão a ficar viva e tridimensional.
+        cheek = "#ff9eb1" if mood in ("feliz", "euforico") else "#9bbbd1"
+        oval(-51, 5, -31, 17, cheek)
+        oval(31, 5, 51, 17, cheek)
+        oval(-47, 6, -39, 10, blend_color(cheek, "#ffffff", 0.55))
+        oval(39, 6, 47, 10, blend_color(cheek, "#ffffff", 0.55))
+
+        # Nariz aparece somente nos animais escolhidos na personalização.
+        if appearance != "tradicional":
+            polygon([(-6, -2), (6, -2), (0, 6)], "#243047", dark, 1)
 
         if mood in ("feliz", "euforico"):
-            self.canvas.create_arc(cx - 20, cy - 5, cx + 20, cy + 25,
-                                   start=180, extent=180, fill="#ef4444", outline="")
+            canvas.create_arc(cx - 20 * scale, cy + 4 * scale,
+                              cx + 20 * scale, cy + 32 * scale,
+                              start=180, extent=180, style="pieslice",
+                              fill="#ef6179", outline=dark, width=2)
+            oval(-8, 18, 8, 28, "#ffb4bf")
         elif mood in ("triste", "irritado", "doente"):
-            self.canvas.create_arc(cx - 20, cy + 10, cx + 20, cy + 35,
-                                   start=0, extent=180, style="arc", width=3, outline="#1f2937")
+            canvas.create_arc(cx - 20 * scale, cy + 13 * scale,
+                              cx + 20 * scale, cy + 39 * scale,
+                              start=0, extent=180, style="arc", outline=dark,
+                              width=max(3, round(3 * scale)))
         else:
-            self.canvas.create_line(cx - 15, cy + 15, cx + 15, cy + 15, width=3, fill="#1f2937")
+            canvas.create_line(cx - 13 * scale, cy + 18 * scale,
+                               cx + 13 * scale, cy + 18 * scale,
+                               fill=dark, width=max(3, round(3 * scale)), smooth=True)
 
-        if appearance != "tradicional":
-            self.canvas.create_polygon(cx - 6, cy + 2, cx + 6, cy + 2,
-                                       cx, cy + 8, fill="#374151", outline="")
-
-        # Acessório equipado
+        # Acessórios com sombra e brilho, coerentes com o novo acabamento 3D.
         if accessory == "oculos":
-            self.canvas.create_rectangle(cx - 48, cy - 25, cx - 8, cy + 4, outline="#111827", width=3)
-            self.canvas.create_rectangle(cx + 8, cy - 25, cx + 48, cy + 4, outline="#111827", width=3)
-            self.canvas.create_line(cx - 8, cy - 10, cx + 8, cy - 10, fill="#111827", width=3)
+            for left, right in [(-51, -7), (7, 51)]:
+                canvas.create_oval(cx + left * scale, cy - 31 * scale,
+                                   cx + right * scale, cy + 3 * scale,
+                                   outline="#18243b", width=max(3, round(4 * scale)))
+            canvas.create_line(cx - 7 * scale, cy - 15 * scale,
+                               cx + 7 * scale, cy - 15 * scale,
+                               fill="#18243b", width=max(3, round(4 * scale)))
         elif accessory == "bone":
-            self.canvas.create_arc(cx - 52, cy - 94, cx + 52, cy - 24,
-                                   start=0, extent=180, fill=COLORS["primary"], outline="")
-            self.canvas.create_oval(cx + 15, cy - 62, cx + 78, cy - 48,
-                                    fill=COLORS["primary_dark"], outline="")
+            oval(-50, -91, 50, -46, COLORS["primary_dark"], dark, 3)
+            oval(-46, -88, 46, -52, COLORS["primary"])
+            oval(-18, -82, 25, -68, "#78c7ff")
+            oval(25, -65, 78, -50, COLORS["primary_dark"], dark, 2)
         elif accessory == "laco":
-            self.canvas.create_polygon(cx - 18, cy - 65, cx - 55, cy - 88,
-                                       cx - 48, cy - 48, fill="#ec4899", outline="")
-            self.canvas.create_polygon(cx - 18, cy - 65, cx + 18, cy - 88,
-                                       cx + 12, cy - 48, fill="#ec4899", outline="")
-            self.canvas.create_oval(cx - 27, cy - 75, cx - 8, cy - 56, fill="#be185d", outline="")
+            polygon([(-13, -59), (-60, -86), (-53, -42), (-12, -52)],
+                    COLORS["danger"], dark, 2)
+            polygon([(-13, -59), (31, -86), (26, -42), (-12, -52)],
+                    COLORS["danger"], dark, 2)
+            oval(-25, -70, -4, -47, "#c92d63", dark, 2)
+            oval(-20, -65, -10, -55, "#ffb2c2")
         elif accessory == "coroa":
-            self.canvas.create_polygon(cx - 45, cy - 68, cx - 35, cy - 108,
-                                       cx - 12, cy - 82, cx, cy - 112,
-                                       cx + 14, cy - 82, cx + 38, cy - 108,
-                                       cx + 45, cy - 68, fill="#facc15", outline="#ca8a04")
+            polygon([(-43, -64), (-38, -105), (-15, -83), (0, -112),
+                     (16, -83), (40, -105), (43, -64)],
+                    COLORS["yellow"], "#9d6c00", 3)
+            oval(-27, -91, -17, -80, "#ffffff")
 
-        # Balão de mensagem amigável
-        self.canvas.create_polygon(45, 15, 375, 15, 375, 53, 230, 53,
-                                   210, 68, 200, 53, 45, 53,
-                                   fill="#ffffff", outline=COLORS["primary"], width=2)
-        self.canvas.create_text(210, 34, text=self.speech_text,
-                                font=("Segoe UI", 8, "bold"), fill=COLORS["text"],
-                                width=310, justify="center")
+    def draw_floating_pet(self):
+        """Mostra apenas o mascote 3D, transparente e sem caixa ao redor."""
+        if self.floating_canvas is None:
+            return
+        try:
+            if not self.floating_canvas.winfo_exists():
+                return
+        except tk.TclError:
+            return
+        self.floating_canvas.delete("all")
+        self.draw_3d_pet(
+            self.floating_canvas, 105, 108, radius=68,
+            mood=self.floating_activity_mood(), floating=True
+        )
+
+    def draw_pet(self):
+        """Monta a tela principal com cenário suave e mascote tridimensional."""
+        canvas = self.canvas
+        canvas.delete("all")
+        width, height = 560, 270
+
+        # Gradiente vertical sem serrilhamento ou blocos visíveis.
+        for y in range(height):
+            color = blend_color("#1463a4", COLORS["screen_dark"], y / height)
+            canvas.create_line(0, y, width, y, fill=color)
+        canvas.create_rectangle(5, 5, width - 5, height - 5,
+                                outline=COLORS["cyan"], width=2)
+
+        # Luz difusa atrás do personagem e partículas arredondadas.
+        for inset, color in [(0, "#244f79"), (22, "#376f93"), (44, "#5795a4")]:
+            canvas.create_oval(165 + inset, 5 + inset / 2,
+                               395 - inset, 218 - inset / 3,
+                               fill=color, outline="")
+        for index, (x, y, size) in enumerate([
+            (48, 45, 4), (92, 88, 6), (139, 34, 3), (429, 43, 5),
+            (475, 91, 3), (512, 35, 5), (107, 148, 4), (457, 148, 6),
+        ]):
+            color = COLORS["yellow"] if index % 3 == 0 else "#d9f8ff"
+            canvas.create_oval(x - size, y - size, x + size, y + size,
+                               fill=color, outline="")
+            canvas.create_oval(x - size / 3, y - size / 2,
+                               x + size / 4, y + size / 4,
+                               fill="#ffffff", outline="")
+
+        canvas.create_text(24, 24, text=f"Dia {max(1, self.state_data['streak'])}",
+                           anchor="w", font=(FONT_FAMILY, 10, "bold"), fill="#ffffff")
+        canvas.create_text(width - 24, 24, text="♡", anchor="e",
+                           font=(FONT_FAMILY, 22, "bold"), fill=COLORS["cyan"])
+
+        self.draw_3d_pet(canvas, 280, 126, radius=65, mood=self.current_mood())
+
+        # Caixa de mensagem arredondada com sombra, contraste alto e texto legível.
+        canvas.create_polygon(
+            rounded_rect_points(35, 211, width - 29, 258, 16),
+            smooth=True, fill="#00112f", outline=""
+        )
+        canvas.create_polygon(
+            rounded_rect_points(31, 207, width - 33, 254, 16),
+            smooth=True, fill="#ffffff", outline="#7be9ff", width=2
+        )
+        canvas.create_text(width / 2, 230, text=self.speech_text,
+                           font=(FONT_FAMILY, 10, "bold"), fill="#09214b",
+                           width=450, justify="center")
 
     # =========================================================================
-    # BLOCO 17 — PERFIL DO USUÁRIO E DO MASCOTE
+    # BLOCO 19 — PERFIL DO USUÁRIO E DO MASCOTE
     # =========================================================================
     def ask_profile_setup(self, first_time=False):
         dialog = tk.Toplevel(self)
@@ -1178,9 +1288,9 @@ class Tamagotchi(tk.Tk):
         dialog.geometry("390x455")
 
         card = tk.Frame(dialog, bg=COLORS["card"], highlightbackground=COLORS["card_border"],
-                        highlightthickness=1)
+                        highlightthickness=2)
         card.pack(fill="both", expand=True, padx=15, pady=15)
-        tk.Label(card, text="✨ Seu perfil", font=("Segoe UI", 14, "bold"),
+        tk.Label(card, text="✨ Seu perfil", font=(FONT_FAMILY, 14, "bold"),
                  fg=COLORS["text"], bg=COLORS["card"]).pack(pady=(18, 12))
 
         entries = {}
@@ -1191,9 +1301,9 @@ class Tamagotchi(tk.Tk):
             ("name", "NOME DO PET", self.state_data["name"]),
         ]
         for key, label_text, initial in fields:
-            tk.Label(card, text=label_text, font=("Segoe UI", 8, "bold"),
+            tk.Label(card, text=label_text, font=(FONT_FAMILY, 8, "bold"),
                      fg=COLORS["text_muted"], bg=COLORS["card"]).pack(anchor="w", padx=28)
-            entry = tk.Entry(card, font=("Segoe UI", 10), bg=COLORS["track"],
+            entry = tk.Entry(card, font=(FONT_FAMILY, 10), bg=COLORS["track"],
                              fg=COLORS["text"], bd=0)
             entry.pack(fill="x", padx=28, pady=(2, 10), ipady=6)
             entry.insert(0, initial)
@@ -1454,7 +1564,7 @@ class Tamagotchi(tk.Tk):
         happiness = max(0, min(100, state["happiness"]))
         self.label_name.config(text=state["name"])
         self.badge_level.set_text(f"⭐ Nível {state['level']}")
-        self.badge_points.set_text(f"💎 {state['points']} pontos")
+        self.badge_points.set_text(f"◆ {state['points']} pontos")
         self.bar_happiness.set(happiness / 100, f"{int(happiness)}%")
         self.bar_xp.set(state["xp"] / needed, f"{int(state['xp'])}/{needed} XP")
         self.label_xp.config(text=f"Nível {state['level']} • faltam {max(0, needed - int(state['xp']))} XP")
