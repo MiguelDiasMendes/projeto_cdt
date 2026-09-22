@@ -1,8 +1,8 @@
 {
-  "happiness": 10.0,
-  "xp": 145,
+  "happiness": 24.5,
+  "xp": 205,
   "level": 7,
-  "points": 274,
+  "points": 286,
   "name": "Tama",
   "appearance": "cachorro",
   "accessory": "nenhum",
@@ -24,36 +24,6 @@
     "level_2"
   ],
   "point_history": [
-    {
-      "date": "2026-09-17T16:28:30.916799",
-      "amount": 2,
-      "reason": "Atividade produtiva"
-    },
-    {
-      "date": "2026-09-17T16:28:34.212570",
-      "amount": 2,
-      "reason": "Atividade produtiva"
-    },
-    {
-      "date": "2026-09-17T16:28:37.369998",
-      "amount": 2,
-      "reason": "Atividade produtiva"
-    },
-    {
-      "date": "2026-09-17T16:28:40.540583",
-      "amount": 2,
-      "reason": "Atividade produtiva"
-    },
-    {
-      "date": "2026-09-17T16:28:43.704723",
-      "amount": 2,
-      "reason": "Atividade produtiva"
-    },
-    {
-      "date": "2026-09-17T16:28:46.968703",
-      "amount": 2,
-      "reason": "Atividade produtiva"
-    },
     {
       "date": "2026-09-17T16:28:50.206813",
       "amount": 2,
@@ -523,21 +493,51 @@
       "date": "2026-09-17T16:56:55.819872",
       "amount": 2,
       "reason": "Atividade produtiva"
+    },
+    {
+      "date": "2026-09-17T16:56:58.917195",
+      "amount": 2,
+      "reason": "Atividade produtiva"
+    },
+    {
+      "date": "2026-09-17T16:57:02.087165",
+      "amount": 2,
+      "reason": "Atividade produtiva"
+    },
+    {
+      "date": "2026-09-17T16:57:05.385661",
+      "amount": 2,
+      "reason": "Atividade produtiva"
+    },
+    {
+      "date": "2026-09-17T16:57:08.575612",
+      "amount": 2,
+      "reason": "Atividade produtiva"
+    },
+    {
+      "date": "2026-09-17T16:57:11.705115",
+      "amount": 2,
+      "reason": "Atividade produtiva"
+    },
+    {
+      "date": "2026-09-17T16:57:14.973345",
+      "amount": 2,
+      "reason": "Atividade produtiva"
     }
   ],
   "time_history": {
     "2026-09-17": {
-      "produtivo": 336.0,
+      "produtivo": 354.0,
       "distracao": 60.0,
-      "neutro": 1251.0
+      "neutro": 1254.0
     }
   },
   "daily_goal_minutes": 30,
   "goal_reward_dates": [],
   "streak": 1,
   "last_productive_date": "2026-09-17",
-  "total_productive_seconds": 336.0,
-  "floating_x": 767,
-  "floating_y": 309,
-  "updated": "2026-09-17T16:56:55.820329"
+  "total_productive_seconds": 354.0,
+  "floating_x": 768,
+  "floating_y": 310,
+  "updated": "2026-09-17T16:57:19.884399"
 }
