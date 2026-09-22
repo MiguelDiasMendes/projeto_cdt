@@ -62,9 +62,26 @@ POINTS_PER_PRODUCTIVE_TICK = 2
 CRITICAL_HAPPINESS = 15
 FOCUS_BREAK_MINUTES = 25
 
-STATE_FILE = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "tamagotchi_state.json"
-)
+def base_dir():
+    if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+        return sys._MEIPASS
+    return os.path.dirname(os.path.abspath(__file__))
+
+
+def resource_path(*parts):
+    return os.path.join(base_dir(), *parts)
+
+
+def state_path():
+    if getattr(sys, "frozen", False):
+        appdata = os.environ.get("LOCALAPPDATA") or os.path.expanduser("~")
+        folder = os.path.join(appdata, "TamagotchiProdutividade")
+        os.makedirs(folder, exist_ok=True)
+        return os.path.join(folder, "tamagotchi_state.json")
+    return os.path.join(base_dir(), "tamagotchi_state.json")
+
+
+STATE_FILE = state_path()
 
 
 def xp_needed_for_level(level):
@@ -155,7 +172,7 @@ THEMES = {
     },
 }
 COLORS = THEMES["claro"].copy()
-ASSET_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets")
+ASSET_DIR = resource_path("assets")
 
 MOOD_COLORS = {
     # O mascote mantém a identidade branca e azul, mudando os detalhes pelo humor.
@@ -298,6 +315,8 @@ def load_state():
 
 def write_state(state):
     try:
+        directory = os.path.dirname(STATE_FILE) or "."
+        os.makedirs(directory, exist_ok=True)
         state["updated"] = datetime.now().isoformat()
         with open(STATE_FILE, "w", encoding="utf-8") as file:
             json.dump(state, file, ensure_ascii=False, indent=2)
